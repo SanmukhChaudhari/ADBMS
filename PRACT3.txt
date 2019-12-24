@@ -1,0 +1,105 @@
+1. Take the employee number from the user , if it is already into the table then, calculate the HRA , DA, and Net salary. (HRA 10%) DA = 60% Net salary = Basic + HRA+DA. 
+Hint : use count() function to check empno is in table or not. 
+DECLARE 
+EMPNO NUMBER(6);
+EMPCOUNT NUMBER(6);
+HRA NUMBER(6);
+DA NUMBER(6);
+EMPSAL NUMBER(6);
+NETSALARY NUMBER(6);
+BEGIN
+EMPNO:=:Enter_Employee_Number;
+SELECT COUNT(EMPID) INTO EMPCOUNT FROM EMPSAM1 WHERE EMPID=EMPNO;
+SELECT SALARY INTO EMPSAL FROM EMPSAM1 WHERE EMPID=EMPNO;
+IF EMPCOUNT > 0 THEN
+HRA:=(EMPSAL*10)/100;
+DA:=(EMPSAL*60)/100;
+NETSALARY:=EMPSAL+HRA+DA;
+DBMS_OUTPUT.PUT_LINE('HRA : '||HRA);
+DBMS_OUTPUT.PUT_LINE('DA : '||DA);
+DBMS_OUTPUT.PUT_LINE('NETSALARY : '||NETSALARY);
+ELSE
+DBMS_OUTPUT.PUT_LINE('NO EMPLOYEE RECORD FOUND.');
+END IF;
+END;
+
+2.Take the empno from the user, if salary less than 10,000 print massage less salary 
+Salary > 10,000 and Salary < 30,000 then print massage medium salary 
+Salary >30,000 and Salary < 60,000 then print massage high salary 
+Salary > 60,000 then print massage very high salary. 
+
+DECLARE 
+EMPNO NUMBER(6);
+EMPSAL NUMBER(6);
+BEGIN
+EMPNO:=:Enter_Employee_Number;
+SELECT SALARY INTO EMPSAL FROM EMPSAM1 WHERE EMPID=EMPNO;
+DBMS_OUTPUT.PUT_LINE('SALARY : '||EMPSAL);
+IF EMPSAL < 10000 THEN
+DBMS_OUTPUT.PUT_LINE('LESS SALARY');
+ELSIF EMPSAL > 10000 AND EMPSAL < 30000 THEN
+DBMS_OUTPUT.PUT_LINE('MEDIUM SALARY');
+ELSIF EMPSAL > 30000 AND EMPSAL < 60000 THEN
+DBMS_OUTPUT.PUT_LINE('HIGH SALARY');
+ELSIF EMPSAL > 60000 THEN
+DBMS_OUTPUT.PUT_LINE('VERY HIGH SALARY');
+END IF;
+END;
+
+3.Write a pl/sql block using case which check the month of hiredate of given empno. And print month in word format e.g January ,march,july) use while loop for repetition of input, 
+Hint : select extract(year from hiredate) from emp; 
+
+DECLARE 
+EMPNO NUMBER(6);
+MONTH VARCHAR2(10);
+BEGIN
+EMPNO:=:Enter_Employee_Number;
+SELECT EXTRACT(MONTH FROM HIREDATE) INTO MONTH FROM EMPSAM1 WHERE EMPID=EMPNO;
+CASE MONTH
+WHEN 1 THEN DBMS_OUTPUT.PUT_LINE('JANUARY');
+WHEN 2 THEN DBMS_OUTPUT.PUT_LINE('FEBRUARY');
+WHEN 3 THEN DBMS_OUTPUT.PUT_LINE('MARCH');
+WHEN 4 THEN DBMS_OUTPUT.PUT_LINE('APRIL');
+WHEN 5 THEN DBMS_OUTPUT.PUT_LINE('MAY');
+WHEN 6 THEN DBMS_OUTPUT.PUT_LINE('JUNE');
+WHEN 7 THEN DBMS_OUTPUT.PUT_LINE('JULY');
+WHEN 8 THEN DBMS_OUTPUT.PUT_LINE('AUGUST');
+WHEN 9 THEN DBMS_OUTPUT.PUT_LINE('SEPTEMBER');
+WHEN 10 THEN DBMS_OUTPUT.PUT_LINE('OCTOBER');
+WHEN 11 THEN DBMS_OUTPUT.PUT_LINE('NOVEMBER');
+WHEN 12 THEN DBMS_OUTPUT.PUT_LINE('DECEMBER');
+END CASE;
+END;
+
+4. Find the reverse of the number which is input by the user. 
+DECLARE 
+NO NUMBER(6);
+REM NUMBER(6);
+REVNO NUMBER(6) := 0;
+BEGIN
+NO:=:Enter_Employee_Number;
+WHILE NO != 0 LOOP
+REM:=NO MOD 10;
+REVNO:=REVNO*10+REM;
+NO:=NO/10;
+END LOOP;
+DBMS_OUTPUT.PUT_LINE('REVERSE NUMBER : '||REVNO);
+END;
+
+5.product_master(prod_id, prod_name, prod_price, qty) 
+old_price (prod_id, old_price, new_price, change_date) 
+Accept new_price from the user. Change the price of the product P00001 to new_price if the price is less than 4000 in product_master table. The change is recorded in the old_price table along with prod_id and the change_date on which the price was last changed. 
+
+DECLARE
+NP NUMBER(6);
+OLDPRICE NUMBER(6);
+BEGIN
+SELECT PRICE INTO OLDPRICE FROM PRODUCTMASTER1SAM WHERE PRODUCTID=1;
+IF OLDPRICE < 4000 THEN
+NP:=:ENTER_NEW_PRICE;
+UPDATE PRODUCTMASTER1SAM SET PRICE=NP WHERE PRODUCTID=1;
+INSERT INTO OLD_PRICE VALUES(1,OLDPRICE,NP,SYSDATE);
+ELSE
+DBMS_OUTPUT.PUT_LINE('PRICE IS GREATER THAN 4000.');
+END IF;
+END;

@@ -1,0 +1,106 @@
+1) Create a function which calculates average salary of department where employee is working and returns value of average salary to function. Employee id is passed as a parameter to the function. 
+
+DECLARE
+   DEPTID NUMBER;
+   AVGSALARY NUMBER;
+   FUNCTION getAvgSalOfDept(DEPT_ID IN NUMBER) RETURN NUMBER IS
+   AVGSAL NUMBER;
+   TOTAL_EMP NUMBER;
+   BEGIN
+       SELECT SUM(SALARY),COUNT(EMPID) INTO AVGSAL,TOTAL_EMP FROM EMPSAM WHERE DEPTID=DEPT_ID;
+       RETURN AVGSAL/TOTAL_EMP;
+   END getAvgSalOfDept;
+BEGIN
+   DEPTID:=:Enter_Department_No;
+   AVGSALARY:=getAvgSalOfDept(DEPTID);
+   DBMS_OUTPUT.PUT_LINE('AVERAGE SALARY IS '||AVGSALARY);
+END;
+
+2)Create a pl/sql block with function cmd_int in which pass parameters amount,rate,interest. Calculate compound interest or simple interest. Allow the user to select either simple interest or compound interest using  case. Function returns value of result and which is displayed to the user. 
+
+DECLARE
+   CHOICE NUMBER;
+   AMT NUMBER;
+   RATE NUMBER;
+   INTEREST NUMBER;
+   ANS NUMBER;
+   FUNCTION getSInterest(A IN NUMBER,R IN NUMBER,I IN NUMBER) RETURN NUMBER IS
+   ANS NUMBER;
+   BEGIN
+        ANS:=(A*R*I)/100;
+        RETURN ANS;
+   END getSInterest;
+   FUNCTION getCInterest(A IN NUMBER,R IN NUMBER,I IN NUMBER) RETURN NUMBER IS
+   ANS NUMBER;
+   BEGIN
+        ANS:= A*R*(I/100)*120;
+        RETURN ANS;
+   END getCInterest;
+
+BEGIN
+   AMT:=:ENTER_AMOUNT;
+   RATE:=:ENTER_RATE;
+   INTEREST:=:ENTER_INTEREST;
+   CHOICE:=:1_SI_2_CI_ENTER_YOUR_CHOICE;
+   CASE CHOICE
+      WHEN 1 THEN ANS:=getSInterest(AMT,RATE,INTEREST);
+      WHEN 2 THEN ANS:=getCInterest(AMT,RATE,INTEREST);
+   END CASE;
+   DBMS_OUTPUT.PUT_LINE(ANS);
+END;
+
+3) Create a function called cal_experience which calculates the experience of employee whose empid is passed as a parameter into the function.(if month difference is –ve subtract 1 from total experience and then return the value)  Write a pl/sql block to execute the function.  Hint: 1) use inbuilt  date functions 
+
+DECLARE
+   EMPID NUMBER;
+   ANS NUMBER;
+   DT DATE:='01/JAN/2010';
+   FUNCTION CAL_EXP(EMP_ID IN NUMBER) RETURN NUMBER IS
+   ANS NUMBER:=1;
+   HDD NUMBER;
+   HDM NUMBER;
+   HDY NUMBER;
+   SDD NUMBER:=EXTRACT(DAY FROM SYSDATE);
+   SDM NUMBER:=EXTRACT(MONTH FROM SYSDATE);
+   SDY NUMBER:=EXTRACT(YEAR FROM SYSDATE);
+   BEGIN
+        SELECT EXTRACT(DAY FROM HIREDATE) INTO HDD FROM EMPSAM WHERE EMPID=EMP_ID;
+        SELECT EXTRACT(MONTH FROM HIREDATE) INTO HDM FROM EMPSAM WHERE EMPID=EMP_ID;
+        SELECT EXTRACT(YEAR FROM HIREDATE) INTO HDY FROM EMPSAM WHERE EMPID=EMP_ID;
+        ANS:=SDY-HDY;
+        IF (SDM-HDM) < 0 THEN ANS:=ANS-1;
+        END IF;
+        RETURN ANS;
+   END CAL_EXP;
+BEGIN
+    EMPID:=:ENTER_EMPID;
+    ANS:=CAL_EXP(EMPID);
+    DBMS_OUTPUT.PUT_LINE('EXPERIENCE(IN YEAR): '||ANS);
+END;
+
+4) Create a pl/sql block which has Prime_number() function which takes one no as input. Function returns true if no is prime, and false otherwise.
+
+DECLARE
+   NO NUMBER;
+   ANS NUMBER;
+   FUNCTION PRIME_NO(NUM IN NUMBER) RETURN NUMBER IS
+   AN NUMBER:=0;
+   D NUMBER:=2;
+   BEGIN
+   FOR D IN 2..NO-1 LOOP
+       IF MOD(NO,D) <= 0 THEN
+       AN:=1;
+       END IF;
+   END LOOP;
+   RETURN AN;
+   END PRIME_NO;
+BEGIN
+    NO:=:ENTER_ANY_NUMBER;
+    ANS:=PRIME_NO(NO);
+    IF ANS < 1 THEN 
+    DBMS_OUTPUT.PUT_LINE(NO||' IS PRIME NUMBER');
+    ELSE
+    DBMS_OUTPUT.PUT_LINE(NO||' NOT IS PRIME NUMBER');
+    END IF;
+END;
+
